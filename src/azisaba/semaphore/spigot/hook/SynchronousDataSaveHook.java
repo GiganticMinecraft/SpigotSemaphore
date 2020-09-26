@@ -1,13 +1,13 @@
 package azisaba.semaphore.spigot.hook;
 
-/*
- * @author Kory
- */
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.CompletableFuture;
+
+/*
+ * @author Kory
+ */
 
 public class SynchronousDataSaveHook {
 

@@ -1,0 +1,3 @@
+name: SpigotSemaphore
+main: azisaba.semaphore.spigot.SpigotSemaphore
+version: 1.0.0

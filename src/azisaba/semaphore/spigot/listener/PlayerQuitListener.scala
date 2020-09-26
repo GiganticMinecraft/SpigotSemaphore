@@ -2,13 +2,14 @@ package azisaba.semaphore.spigot.listener
 
 import java.util.concurrent.CompletableFuture
 
+import amata1219.redis.plugin.messages.spigot.RedisPluginMessagesAPI
 import azisaba.semaphore.spigot.SpigotSemaphore
 import azisaba.semaphore.spigot.future.FuturesCompletionWaiting
 import azisaba.semaphore.spigot.hook.{CoordinationHookRegistry, QuitEventDataSaveHook}
-import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.{EventHandler, EventPriority, Listener}
 
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -21,7 +22,7 @@ import scala.util.{Failure, Success}
 
 class PlayerQuitListener extends Listener with CoordinationHookRegistry {
 
-  val hookList: ArrayBuffer[QuitEventDataSaveHook[_]] = SpigotSemaphore.hookList
+  val hookList: mutable.ArrayBuffer[QuitEventDataSaveHook[_]] = mutable.ArrayBuffer()
 
   @EventHandler(priority = EventPriority.MONITOR)
   def on(event: PlayerQuitEvent): Unit = {
@@ -29,10 +30,15 @@ class PlayerQuitListener extends Listener with CoordinationHookRegistry {
       .map(_.asScala)
       .toSeq
 
-    val player: Player = event.getPlayer
+    val redis: RedisPluginMessagesAPI = SpigotSemaphore.isntance().redisPluginMessagesAPI()
+    val playerName: String = event.getPlayer.getName
     FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
       case Success(_) =>
+        redis.sendRedisPluginMessage(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"confirm_player_data_saved $playerName")
       case Failure(ex) =>
+        println(s"${playerName}のプレイヤーデータの保存に失敗しました。")
+        ex.printStackTrace()
+        redis.sendRedisPluginMessage(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"failed_saving_some_player_data $playerName")
     }
   }
 
