@@ -30,16 +30,16 @@ class PlayerQuitListener extends Listener with CoordinationHookRegistry {
       .map(_.asScala)
       .toSeq
 
-    Bukkit.getScheduler.runTask(SpigotSemaphore.isntance(), () => {
-      val redis: RedisPluginMessagesAPI = SpigotSemaphore.isntance().redisPluginMessagesAPI()
+    val plugin: SpigotSemaphore = SpigotSemaphore.isntance()
+    Bukkit.getScheduler.runTask(plugin, () => {
       val playerName: String = event.getPlayer.getName
       FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
         case Success(_) =>
-          redis.sendRedisPluginMessage(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"confirm_player_data_saved $playerName")
+          plugin.publisher.publish(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"confirm_player_data_saved $playerName")
         case Failure(ex) =>
           println(s"${playerName}のプレイヤーデータの保存に失敗しました。")
           ex.printStackTrace()
-          redis.sendRedisPluginMessage(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"failed_saving_some_player_data $playerName")
+          plugin.publisher.publish(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"failed_saving_some_player_data $playerName")
       }
     })
   }

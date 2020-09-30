@@ -3,6 +3,8 @@ package azisaba.semaphore.spigot;
 import amata1219.redis.plugin.messages.spigot.RedisPluginMessagesAPI;
 import azisaba.semaphore.spigot.hook.SynchronousDataSaveHook;
 import azisaba.semaphore.spigot.listener.PlayerQuitListener;
+import azisaba.semaphore.spigot.redis.RedisPluginMessaging;
+import azisaba.semaphore.spigot.redis.RedisPublisher;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +16,7 @@ public class SpigotSemaphore extends JavaPlugin {
     private static SpigotSemaphore instance;
 
     private final PlayerQuitListener hookRegistry = new PlayerQuitListener();
-    private RedisPluginMessagesAPI redisPluginMessagesAPI;
+    private RedisPublisher publisher;
 
     @Override
     public void onEnable() {
@@ -24,7 +26,7 @@ public class SpigotSemaphore extends JavaPlugin {
         if (!(maybeRedisPluginMessages instanceof RedisPluginMessagesAPI))
             throw new NullPointerException("Not found RedisPluginMessages plugin.");
 
-        redisPluginMessagesAPI = (RedisPluginMessagesAPI) maybeRedisPluginMessages;
+        publisher = new RedisPluginMessaging((RedisPluginMessagesAPI) maybeRedisPluginMessages);
 
         getServer().getPluginManager().registerEvents(hookRegistry, this);
     }
@@ -38,8 +40,8 @@ public class SpigotSemaphore extends JavaPlugin {
         return instance;
     }
 
-    public RedisPluginMessagesAPI redisPluginMessagesAPI() {
-        return redisPluginMessagesAPI;
+    public RedisPublisher publisher() {
+        return publisher;
     }
 
     public void registerHook(JavaPlugin hostPlugin) {
