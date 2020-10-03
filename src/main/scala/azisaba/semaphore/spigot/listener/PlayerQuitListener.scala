@@ -3,10 +3,9 @@ package azisaba.semaphore.spigot.listener
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
-import azisaba.semaphore.spigot.SpigotSemaphore
 import azisaba.semaphore.spigot.future.FuturesCompletionWaiting
 import azisaba.semaphore.spigot.hook.{CoordinationHookRegistry, QuitEventDataSaveHook}
-import azisaba.semaphore.spigot.redis.RedisPublisher
+import azisaba.semaphore.spigot.{PlayerDataSaveFailed, PlayerDataSaved, SignalPublisher}
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.{EventHandler, EventPriority, Listener}
@@ -22,7 +21,7 @@ import scala.util.{Failure, Success}
  * @author amata1219
  */
 
-class PlayerQuitListener(publisherRef: AtomicReference[RedisPublisher],
+class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher],
                          parentPlugin: JavaPlugin) extends Listener with CoordinationHookRegistry {
 
   val hookList: mutable.ArrayBuffer[QuitEventDataSaveHook[_]] = mutable.ArrayBuffer()
@@ -44,11 +43,11 @@ class PlayerQuitListener(publisherRef: AtomicReference[RedisPublisher],
       val playerName: String = event.getPlayer.getName
       FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
         case Success(_) =>
-          publisher.publish(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"confirm_player_data_saved $playerName")
+          publisher.publish(PlayerDataSaved(playerName))
         case Failure(ex) =>
           println(s"${playerName}のプレイヤーデータの保存に失敗しました。")
           ex.printStackTrace()
-          publisher.publish(SpigotSemaphore.PLUGIN_MESSAGING_CHANNEL, s"failed_saving_some_player_data $playerName")
+          publisher.publish(PlayerDataSaveFailed(playerName))
       }
     })
   }
