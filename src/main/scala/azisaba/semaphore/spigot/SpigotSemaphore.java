@@ -10,7 +10,7 @@ public class SpigotSemaphore extends JavaPlugin {
 
     public final AtomicReference<SignalPublisher> publisherRef = new AtomicReference<>();
 
-    private final PlayerQuitListener hookRegistry = new PlayerQuitListener(publisherRef, this);
+    private final PlayerQuitListener hookRegistry = new PlayerQuitListener(publisherRef);
 
     @Override
     public void onEnable() {

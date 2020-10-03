@@ -20,9 +20,8 @@ import scala.util.{Failure, Success}
 /*
  * @author amata1219
  */
-
-class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher],
-                         parentPlugin: JavaPlugin) extends Listener with CoordinationHookRegistry {
+class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher])
+  extends Listener with CoordinationHookRegistry {
 
   val hookList: mutable.ArrayBuffer[QuitEventDataSaveHook[_]] = mutable.ArrayBuffer()
 
@@ -39,17 +38,16 @@ class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher],
       .map(_.asScala)
       .toSeq
 
-    Bukkit.getScheduler.runTask(parentPlugin, () => {
-      val playerName: String = event.getPlayer.getName
-      FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
-        case Success(_) =>
-          publisher.publish(PlayerDataSaved(playerName))
-        case Failure(ex) =>
-          println(s"${playerName}のプレイヤーデータの保存に失敗しました。")
-          ex.printStackTrace()
-          publisher.publish(PlayerDataSaveFailed(playerName))
-      }
-    })
+    val playerName: String = event.getPlayer.getName
+
+    FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
+      case Success(_) =>
+        publisher.publish(PlayerDataSaved(playerName))
+      case Failure(ex) =>
+        println(s"${playerName}のプレイヤーデータの保存に失敗しました。")
+        ex.printStackTrace()
+        publisher.publish(PlayerDataSaveFailed(playerName))
+    }
   }
 
   override def register[U](save: QuitEventDataSaveHook[U]): Unit = hookList += save
