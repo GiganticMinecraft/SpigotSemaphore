@@ -1,4 +1,4 @@
-name: SpigotSemaphore
+name: @name@
 main: azisaba.semaphore.spigot.SpigotSemaphore
-version: 1.0.0
+version: @version@
 softdepend: [RedisPluginMessages]
