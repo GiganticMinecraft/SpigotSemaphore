@@ -1,20 +1,29 @@
 package azisaba.semaphore.spigot;
 
+import azisaba.semaphore.spigot.hook.BufferedHookRegistry;
+import azisaba.semaphore.spigot.hook.CoordinationHookRegistry;
 import azisaba.semaphore.spigot.listener.PlayerQuitListener;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+@SuppressWarnings("unused")
 public class SpigotSemaphore extends JavaPlugin {
+
+    private final BufferedHookRegistry globalRegistry = new BufferedHookRegistry();
+
+    public CoordinationHookRegistry hookRegistry() {
+        return globalRegistry;
+    }
 
     public final AtomicReference<SignalPublisher> publisherRef = new AtomicReference<>();
 
-    private final PlayerQuitListener hookRegistry = new PlayerQuitListener(publisherRef);
-
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(hookRegistry, this);
+        getServer()
+                .getPluginManager()
+                .registerEvents(new PlayerQuitListener(publisherRef, globalRegistry), this);
     }
 
     @Override
