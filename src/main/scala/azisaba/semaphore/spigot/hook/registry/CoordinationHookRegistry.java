@@ -1,8 +1,9 @@
-package azisaba.semaphore.spigot.hook;
+package azisaba.semaphore.spigot.hook.registry;
 
 /*
  * @author Kory
  */
+import azisaba.semaphore.spigot.hook.QuitEventDataSaveHook;
 
 public interface CoordinationHookRegistry {
 

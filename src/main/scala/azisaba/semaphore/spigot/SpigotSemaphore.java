@@ -1,8 +1,9 @@
 package azisaba.semaphore.spigot;
 
-import azisaba.semaphore.spigot.hook.BufferedHookRegistry;
-import azisaba.semaphore.spigot.hook.CoordinationHookRegistry;
+import azisaba.semaphore.spigot.hook.registry.BufferedHookRegistry;
+import azisaba.semaphore.spigot.hook.registry.CoordinationHookRegistry;
 import azisaba.semaphore.spigot.listener.PlayerQuitListener;
+import azisaba.semaphore.spigot.signal.SignalPublisher;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 

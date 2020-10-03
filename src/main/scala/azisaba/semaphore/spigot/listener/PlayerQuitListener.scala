@@ -4,8 +4,8 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
 import azisaba.semaphore.spigot.future.FuturesCompletionWaiting
-import azisaba.semaphore.spigot.hook.BufferedHookRegistry
-import azisaba.semaphore.spigot.{PlayerDataSaveFailed, PlayerDataSaved, SignalPublisher}
+import azisaba.semaphore.spigot.hook.registry.BufferedHookRegistry
+import azisaba.semaphore.spigot.signal.{PlayerDataSaveFailed, PlayerDataSaved, SignalPublisher}
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.{EventHandler, EventPriority, Listener}
 

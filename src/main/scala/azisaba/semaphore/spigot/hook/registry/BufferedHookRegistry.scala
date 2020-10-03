@@ -1,4 +1,6 @@
-package azisaba.semaphore.spigot.hook
+package azisaba.semaphore.spigot.hook.registry
+
+import azisaba.semaphore.spigot.hook.QuitEventDataSaveHook
 
 import scala.collection.mutable
 

@@ -1,4 +1,4 @@
-package azisaba.semaphore.spigot
+package azisaba.semaphore.spigot.signal
 
 /**
  * 上流、即ちBungeeCordへ向けてSpigotから送信するメッセージの型
