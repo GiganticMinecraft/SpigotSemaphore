@@ -21,13 +21,6 @@ class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher], hookReg
 
   @EventHandler(priority = EventPriority.MONITOR)
   def on(event: PlayerQuitEvent): Unit = {
-    val publisher = publisherRef.get() match {
-      case null =>
-        println("Redisへの接続情報が登録されていません。")
-        return
-      case x => x
-    }
-
     val futures: Seq[Future[_]] = hookRegistry.hooks
       .map[CompletableFuture[_]](_ (event))
       .map(_.asScala)
@@ -36,6 +29,13 @@ class PlayerQuitListener(publisherRef: AtomicReference[SignalPublisher], hookReg
     val playerName: String = event.getPlayer.getName
 
     if (futures.nonEmpty) {
+      val publisher = publisherRef.get() match {
+        case null =>
+          println("Redisへの接続情報が登録されていません。")
+          return
+        case x => x
+      }
+
       FuturesCompletionWaiting.waitAllFuturesCompletion(futures).onComplete {
         case Success(_) =>
           publisher.publish(PlayerDataSaved(playerName))
