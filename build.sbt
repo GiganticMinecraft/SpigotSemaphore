@@ -1,6 +1,6 @@
 import ResourceFilter.filterResources
 
-ThisBuild / scalaVersion := "2.13.3"
+ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / version := "1.0.0"
 ThisBuild / description := "A SpigotCord gateway to coordinate with BungeeSemaphore"
 
